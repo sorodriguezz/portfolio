@@ -106,12 +106,12 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right - Terminal Card */}
+          {/* Right - Terminal Card (kept as a dark code editor in both themes) */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="hidden lg:block"
+            className="dark hidden lg:block"
           >
             <div className="relative">
               {/* Floating Stats Card */}

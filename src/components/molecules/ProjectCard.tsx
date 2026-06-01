@@ -50,8 +50,9 @@ export function ProjectCard({
       style={{ "--project-color": project.color } as React.CSSProperties}
       className="group bg-bg-card border border-border rounded-xl overflow-hidden transition-all duration-500 card-shine h-full flex flex-col"
     >
-      {/* Image Header */}
-      <div className="relative h-48 overflow-hidden bg-linear-to-br from-bg-card to-bg-dark">
+      {/* Image Header — kept dark-scoped so image overlays (version badge,
+          hover icons) stay readable in both light and dark themes. */}
+      <div className="dark relative h-48 overflow-hidden bg-linear-to-br from-bg-card to-bg-dark">
         <div
           className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
           style={{

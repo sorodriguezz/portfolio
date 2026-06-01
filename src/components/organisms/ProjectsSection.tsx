@@ -52,7 +52,7 @@ export function ProjectsSection({
       id="proyectos"
       className={
         centered
-          ? "snap-section min-h-screen flex flex-col pt-[12vh] pb-[4vh] relative"
+          ? "snap-section py-12 sm:py-20 relative"
           : "py-12 sm:py-20 relative"
       }
     >

@@ -168,7 +168,7 @@ export function ContactSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-bg-card border border-border rounded-xl p-4 sm:p-6 shadow-[0_0_50px_rgba(0,0,0,0.2)]"
+            className="bg-bg-card border border-border rounded-xl p-4 sm:p-6 glow-border"
           >
             <form onSubmit={sendEmail} className="space-y-2">
               <div className="grid sm:grid-cols-2 gap-4">

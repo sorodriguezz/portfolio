@@ -1,33 +1,143 @@
 @import "tailwindcss";
 
+/* Tailwind utility tokens point at runtime variables that swap per theme. */
 @theme inline {
-  --color-primary: #00e5ff;
-  --color-primary-dark: #00b8d4;
-  --color-secondary: #7c4dff;
-  --color-accent: #ff4081;
-  --color-success: #00e676;
-  --color-warning: #ffab00;
-  --color-bg-dark: #0a0e1a;
-  --color-bg-card: #111827;
-  --color-bg-card-hover: #1a2332;
-  --color-text-primary: #e2e8f0;
-  --color-text-secondary: #94a3b8;
-  --color-border: #1e293b;
+  --color-primary: var(--c-primary);
+  --color-primary-dark: var(--c-primary-dark);
+  --color-secondary: var(--c-secondary);
+  --color-accent: var(--c-accent);
+  --color-success: var(--c-success);
+  --color-warning: var(--c-warning);
+  --color-bg-dark: var(--c-bg-dark);
+  --color-bg-card: var(--c-bg-card);
+  --color-bg-card-hover: var(--c-bg-card-hover);
+  --color-text-primary: var(--c-text-primary);
+  --color-text-secondary: var(--c-text-secondary);
+  --color-border: var(--c-border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-.snap-container {
-  scroll-snap-type: y mandatory;
+/* ---- Dark theme (default) ---- */
+:root,
+.dark {
+  --c-primary: #00e5ff;
+  --c-primary-dark: #00b8d4;
+  --c-secondary: #7c4dff;
+  --c-accent: #ff4081;
+  --c-success: #00e676;
+  --c-warning: #ffab00;
+  --c-bg-dark: #0a0e1a;
+  --c-bg-card: #111827;
+  --c-bg-card-hover: #1a2332;
+  --c-text-primary: #e2e8f0;
+  --c-text-secondary: #94a3b8;
+  --c-border: #1e293b;
+  --c-glow: 0, 229, 255;
+  /* Neon glow gives depth on dark surfaces. */
+  --shadow-card: 0 0 15px rgba(var(--c-glow), 0.15),
+    0 0 30px rgba(var(--c-glow), 0.05);
+  --shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.02);
+  color-scheme: dark;
 }
 
-* {
+/* ---- Light theme ---- */
+.light {
+  --c-primary: #0e7490;
+  --c-primary-dark: #155e75;
+  --c-secondary: #6d28d9;
+  --c-accent: #be185d;
+  --c-success: #047857;
+  --c-warning: #b45309;
+  --c-bg-dark: #eef2f8;
+  --c-bg-card: #ffffff;
+  --c-bg-card-hover: #f3f6fb;
+  --c-text-primary: #0f172a;
+  --c-text-secondary: #475569;
+  --c-border: #d8e0ec;
+  --c-glow: 14, 116, 144;
+  /* On light surfaces, real soft shadows read better than a glow. */
+  --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.10),
+    0 3px 8px rgba(15, 23, 42, 0.06);
+  --shadow-soft: 0 4px 16px rgba(15, 23, 42, 0.08),
+    0 2px 4px rgba(15, 23, 42, 0.05);
+  color-scheme: light;
+}
+
+/* ---- Vertical Wipe theme transition (View Transitions API) ---- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: vertical-wipe 0.7s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes vertical-wipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* Free scrolling — no scroll-snap (it was fighting the gesture).
+   scroll-behavior only affects programmatic jumps (nav links, scroll-to-top),
+   never the user's wheel/touch scrolling, so it won't cause lag. */
+.snap-container {
+  scroll-padding-top: 4rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+html {
   scroll-behavior: smooth;
 }
 
+/* Anchor targets land below the fixed navbar. */
 .snap-section {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-margin-top: 4rem;
+}
+
+/* Lightweight entrance reveal: opacity + a small slide, nothing GPU-heavy. */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal-on-scroll,
+  .reveal-on-scroll.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 body {
@@ -61,11 +171,16 @@ body {
 }
 
 .glow-border {
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.15), 0 0 30px rgba(0, 229, 255, 0.05);
+  box-shadow: var(--shadow-card);
+}
+
+/* Give flat cards real depth in light mode (the cyan glow is invisible there). */
+.light .card-shine {
+  box-shadow: var(--shadow-soft);
 }
 
 .glow-text {
-  text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+  text-shadow: 0 0 20px rgba(var(--c-glow), 0.5);
 }
 
 .card-shine {
@@ -80,7 +195,7 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.05), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--c-glow), 0.05), transparent);
   transition: left 0.5s ease;
 }
 
@@ -127,7 +242,7 @@ body {
 }
 
 .blog-content code {
-  background: rgba(0, 229, 255, 0.1);
+  background: rgba(var(--c-glow), 0.1);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: var(--font-mono), monospace;
